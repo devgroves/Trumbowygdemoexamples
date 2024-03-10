@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trumbowyg</title>
+    <base href="/test/base/url/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+            font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .trumbowyg {
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-size: 26px;
+            margin-top: 0;
+        }
+
+        h1+pre,
+        h2+pre,
+        h3+pre,
+        h4+pre {
+            margin-top: -20px;
+        }
+
+        p {
+            margin-top: 0;
+        }
+
+        :root {
+            --tbw-cell-vertical-padding: 4px;
+            --tbw-cell-horizontal-padding: 8px;
+            --tbw-cell-line-height: 1.5em;
+        }
+
+        table {
+            margin-bottom: var(--tbw-cell-line-height);
+        }
+
+        th,
+        td {
+            height: calc(var(--tbw-cell-vertical-padding) * 2 + var(--tbw-cell-line-height));
+            min-width: calc(var(--tbw-cell-horizontal-padding) * 2);
+            padding: var(--tbw-cell-vertical-padding) var(--tbw-cell-horizontal-padding);
+            border: 1px solid #e7eaec;
+        }
+
+        thead {
+            background: #FFFFFF;
+        }
+    </style>
+    <link rel="stylesheet" href="/dist/ui/trumbowyg.css">
+    <link rel="stylesheet" href="/dist/plugins/colors/ui/trumbowyg.colors.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Trumbowyg examples</h1>
+        </header>
+        <div class="container">
+            <div id="simple-editor">
+                <h2> video and audio demo.</h2>
+                <input type="file" id="video-input" accept="video/*" style="display: none;">
+                <input type="file" id="audio-input" accept="audio/*" style="display: none;">
+            </div>
+            <button id="reset-default-editor">Reset</button>
+        </div>
+        <div class="container">
+            <div id="flat-buttonpane">
+                <h2>All buttons of Trumbowyg are here.</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus, aliquam, minima fugiat placeat provident optio nam reiciendis eius beatae quibusdam!
+                </p>
+            </div>
+            <div><button id="download-docs-btn">Download docs</button></div>
+        </div>
+    </div>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="https://raw.githack.com/evidenceprime/html-docx-js/master/dist/html-docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="/dist/trumbowyg.js"></script>
+    <script src="/dist/langs/fr.min.js"></script>
+    <script src="/dist/plugins/base64/trumbowyg.base64.js"></script>
+    <script src="/dist/plugins/colors/trumbowyg.colors.js"></script>
+    <script src="/dist/plugins/noembed/trumbowyg.noembed.js"></script>
+    <script src="/dist/plugins/pasteimage/trumbowyg.pasteimage.js"></script>
+    <script src="/dist/plugins/template/trumbowyg.template.js"></script>
+    <script src="/dist/plugins/preformatted/trumbowyg.preformatted.js"></script>
+    <script src="/dist/plugins/ruby/trumbowyg.ruby.js"></script>
+    <script src="/dist/plugins/upload/trumbowyg.upload.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#simple-editor')
+                .trumbowyg({
+                    btns: [
+                        [ 'viewHTML' ],
+                        [ 'insertVideo', 'insertAudio' ],
+                        [ 'insertLocalVideo', 'insertLocalAudio' ],
+                    ],
+                    btnsDef: {
+                        insertVideo: {
+                            fn: function () {
+                                let url = prompt('Enter the video URL:');
+                                if (url) {
+                                    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                                        let youtubeEmbed = '<div class="embed-container"><iframe width="640" height="360" src="' + getYouTubeEmbedUrl(url) + '" frameborder="0" allowfullscreen></iframe></div>';
+                                        $('#simple-editor').trumbowyg('html', youtubeEmbed);
+                                    }
+                                    else {
+                                        let videoHtml = '<video controls width="640" height="360">';
+                                        videoHtml += '<source src="' + url + '" type="video/mp4">';
+                                        videoHtml += '</video>';
+                                        $('#simple-editor').trumbowyg('html', videoHtml);
+
+                                    }
+                                }
+                            },
+                            ico: 'upload',
+                            title: 'upload Video'
+                        },
+                        insertAudio: {
+                            fn: function () {
+                                let url = prompt('Enter the audio URL:');
+                                if (url !== null && url !== "") {
+                                    let audioHtml = '<audio controls>';
+                                    audioHtml += '<source src="' + url + '" type="audio/mp3">';
+                                    audioHtml += '</audio>';
+                                    console.log(url);
+                                    $('#simple-editor').trumbowyg('html', audioHtml);
+                                }
+                            },
+                            ico: 'insertAudio',
+                            title: 'Insert Audio'
+                        },
+                        insertLocalVideo: {
+                            fn: function () {
+                                if ($('#video-input').length > 0) {
+
+                                    $('#video-input').click();
+
+                                } else {
+                                    let revideohtml = '<input type="file" id="video-input" accept="video/*" style="display: none;">';
+                                    $('#simple-editor').trumbowyg('html', revideohtml);
+                                    $('#video-input').click();
+                                    $('#video-input').on('change', function (event) {
+
+                                        displayInputVideo(event);
+                                    });
+
+                                }
+                            },
+                            ico: 'upload',
+                            title: 'upload  local Video'
+                        },
+                        insertLocalAudio: {
+                            fn: function () {
+                                if ($('#audio-input').length > 0) {
+                                    $('#audio-input').click();
+                                } else {
+                                    let reaudiohtml = '<input type="file" id="audio-input" accept="audio/*" style="display: none;">';
+                                    $('#simple-editor').trumbowyg('html', reaudiohtml);
+                                    $('#audio-input').click();
+                                    $('#audio-input').on('change', function (event) {
+
+                                        displayInputAudio(event);
+                                    });
+                                }
+                            },
+                            title: 'Insert Local Audio',
+                            ico: 'insertAudio'
+                        },
+                    },
+                    semantic: true,
+                });
+
+            $('.trumbowyg-insertLocalVideo-button').click(function () {
+                $('#video-input').click();
+            });
+            $('.trumbowyg-insertLocalAudio-button').click(function () {
+
+                $('#audio-input').click();
+            });
+            $('#video-input').on('change', function (event) {
+                displayInputVideo(event);
+            });
+
+            function displayInputVideo(event) {
+
+                let file = event.target.files[ 0 ];
+                if (file) {
+
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let videoHtml = '<video controls width="640" height="360">';
+                        videoHtml += '<source src="' + e.target.result + '" type="video/mp4">';
+                        videoHtml += '</video>';
+
+                        $('#simple-editor').trumbowyg('html', videoHtml);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            function displayInputAudio(event) {
+                alert("reaudiohtml")
+                let file = event.target.files[ 0 ];
+                if (file) {
+                    $('#loading-spinner').show();
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        let audioHtml = '<audio controls>';
+                        audioHtml += '<source src="' + e.target.result + '" type="audio/mp3">';
+                        audioHtml += '</audio>';
+
+                        $('#simple-editor').trumbowyg('html', audioHtml);
+
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+            function getYouTubeEmbedUrl(url) {
+                let videoId = url.split('v=')[ 1 ];
+                let ampersandPosition = videoId.indexOf('&');
+                if (ampersandPosition !== -1) {
+                    videoId = videoId.substring(0, ampersandPosition);
+                }
+                return 'https://www.youtube.com/embed/' + videoId;
+            }
+            $('#audio-input').on('change', function (event) {
+                displayInputAudio(event);
+            });
+            var uploadOptions = {
+                serverPath: 'https://api.imgur.com/3/image',
+                fileFieldName: 'image',
+                headers: { 'Authorization': 'Client-ID 9e57cb1c4791cea' },
+                urlPropertyName: 'data.link',
+                imageWidthModalEdit: true
+            };
+
+            $('#flat-buttonpane')
+                .trumbowyg({
+                    btns: [
+                        [ 'viewHTML' ],
+                        [ 'p', 'blockquote', 'h1', 'h2', 'h3', 'h4' ],
+                        [ 'strong', 'em', 'underline', 'del' ],
+                        [ 'superscript', 'subscript' ],
+                        [ 'createLink', 'unlink' ],
+                        [ 'insertImage' ],
+                        [ 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull' ],
+                        [ 'unorderedList', 'orderedList' ],
+                        [ 'horizontalRule' ],
+                        [ 'removeformat' ],
+
+                        [ 'upload', 'base64', 'noembed' ],
+                        [ 'ruby' ],
+                        [ 'foreColor', 'backColor' ],
+                        [ 'preformatted' ],
+                        [ 'template' ],
+                        [ 'fullscreen', 'close' ]
+                    ],
+                    plugins: {
+                        upload: uploadOptions,
+                        templates: [
+                            {
+                                name: 'Template 1',
+                                html: '<p>I am a template!</p>'
+                            },
+                            {
+                                name: 'Template 2',
+                                html: '<p>I am a different template!</p>'
+                            }
+                        ]
+                    }
+                });
+            $.extend(true, $.trumbowyg.langs, {
+                fr: {
+                    align: 'Alignement',
+                    image: 'Image'
+                }
+            });
+            var customizedButtonPaneTbwOptions = {
+                lang: 'fr',
+                fixedBtnPane: true,
+                semantic: false,
+                btnsDef: {
+                    // Customizable dropdowns
+                    align: {
+                        dropdown: [ 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull' ],
+                        ico: 'justifyLeft'
+                    },
+                    image: {
+                        dropdown: [ 'insertImage', 'upload', 'base64', 'noembed' ],
+                        ico: 'insertImage'
+                    }
+                },
+                btns: [
+                    [ 'viewHTML' ],
+                    [ 'formatting' ],
+                    [ 'bold', 'italic', 'strikethrough' ],
+                    [ 'link' ],
+                    [ 'align' ],
+                    [ 'image' ],
+                    [ 'foreColor', 'backColor' ],
+                    [ 'preformatted' ],
+                    [ 'fullscreen', 'close' ]
+                ],
+                changeActiveDropdownIcon: true,
+                minimalLinks: true,
+                defaultLinkTarget: '_blank',
+                plugins: {
+                    upload: uploadOptions
+                }
+            };
+            var formTbwOptions = {
+                lang: 'fr',
+                mobile: true,
+                fixedBtnPane: true,
+                fixedFullWidth: true,
+                semantic: true,
+                resetCss: true,
+                removeformatPasted: true,
+                tagsToRemove: [ 'script', 'style' ],
+                imageWidthModalEdit: true,
+
+                autogrow: true,
+                autogrowOnEnter: true,
+
+                btnsDef: {
+                    strong: {
+                        fn: 'bold',
+                        key: 'G'
+                    }
+                }
+            };
+            $('#reset-default-editor').click(function () {
+
+                $('#simple-editor').trumbowyg('empty');
+
+            });
+        }); 
+    </script>
+</body>
+
+</html>
