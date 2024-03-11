@@ -88,7 +88,7 @@
             <div id="flat-buttonpane">
                 <h2>All buttons of Trumbowyg are here.</h2>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Possimus, aliquam, minima fugiat placeat provident optio nam reiciendis eius beatae quibusdam!
+                    "In the Trumbowyg editor, each button is a key to unlocking a world of creative possibilities. From formatting your text with bold and italics to adding images and links, these buttons are your go-to tools for seamless content creation. The 'Download docs' button provides a quick and convenient way to save and share your masterpiece. Explore, experiment, and elevate your editing experience with the intuitive buttonpane at your command."
                 </p>
             </div>
             <div><button id="download-docs-btn">Download docs</button></div>
@@ -109,6 +109,7 @@
     <script src="/dist/plugins/upload/trumbowyg.upload.js"></script>
     <script>
         $(document).ready(function () {
+          
             $('#simple-editor')
                 .trumbowyg({
                     btns: [
@@ -350,6 +351,11 @@
                     }
                 }
             };
+               let htmlContent = $('#flat-buttonpane').trumbowyg('html');
+            let converted = htmlDocx.asBlob(htmlContent);
+            $('#download-docs-btn').click(function () {
+                saveAs(converted, 'document.docx');
+            });
             $('#reset-default-editor').click(function () {
 
                 $('#simple-editor').trumbowyg('empty');
