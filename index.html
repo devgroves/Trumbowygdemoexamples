@@ -96,17 +96,12 @@
     </div>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="https://raw.githack.com/evidenceprime/html-docx-js/master/dist/html-docx.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="/dist/trumbowyg.js"></script>
-    <script src="/dist/langs/fr.min.js"></script>
     <script src="/dist/plugins/base64/trumbowyg.base64.js"></script>
     <script src="/dist/plugins/colors/trumbowyg.colors.js"></script>
-    <script src="/dist/plugins/noembed/trumbowyg.noembed.js"></script>
     <script src="/dist/plugins/pasteimage/trumbowyg.pasteimage.js"></script>
     <script src="/dist/plugins/template/trumbowyg.template.js"></script>
-    <script src="/dist/plugins/preformatted/trumbowyg.preformatted.js"></script>
-    <script src="/dist/plugins/ruby/trumbowyg.ruby.js"></script>
-    <script src="/dist/plugins/upload/trumbowyg.upload.js"></script>
+   
     <script>
         $(document).ready(function () {
           
@@ -205,10 +200,8 @@
             });
 
             function displayInputVideo(event) {
-
                 let file = event.target.files[ 0 ];
                 if (file) {
-
                     let reader = new FileReader();
                     reader.onload = function (e) {
                         let videoHtml = '<video controls width="640" height="360">';
@@ -221,7 +214,6 @@
                 }
             }
             function displayInputAudio(event) {
-                alert("reaudiohtml")
                 let file = event.target.files[ 0 ];
                 if (file) {
                     $('#loading-spinner').show();
@@ -255,7 +247,6 @@
                 urlPropertyName: 'data.link',
                 imageWidthModalEdit: true
             };
-
             $('#flat-buttonpane')
                 .trumbowyg({
                     btns: [
@@ -267,14 +258,9 @@
                         [ 'insertImage' ],
                         [ 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull' ],
                         [ 'unorderedList', 'orderedList' ],
-                        [ 'horizontalRule' ],
-                        [ 'removeformat' ],
-
-                        [ 'upload', 'base64', 'noembed' ],
-                        [ 'ruby' ],
+                        [ 'horizontalRule' ],                
                         [ 'foreColor', 'backColor' ],
-                        [ 'preformatted' ],
-                        [ 'template' ],
+                         [ 'template' ],
                         [ 'fullscreen', 'close' ]
                     ],
                     plugins: {
@@ -291,75 +277,13 @@
                         ]
                     }
                 });
-            $.extend(true, $.trumbowyg.langs, {
-                fr: {
-                    align: 'Alignement',
-                    image: 'Image'
-                }
-            });
-            var customizedButtonPaneTbwOptions = {
-                lang: 'fr',
-                fixedBtnPane: true,
-                semantic: false,
-                btnsDef: {
-                    // Customizable dropdowns
-                    align: {
-                        dropdown: [ 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull' ],
-                        ico: 'justifyLeft'
-                    },
-                    image: {
-                        dropdown: [ 'insertImage', 'upload', 'base64', 'noembed' ],
-                        ico: 'insertImage'
-                    }
-                },
-                btns: [
-                    [ 'viewHTML' ],
-                    [ 'formatting' ],
-                    [ 'bold', 'italic', 'strikethrough' ],
-                    [ 'link' ],
-                    [ 'align' ],
-                    [ 'image' ],
-                    [ 'foreColor', 'backColor' ],
-                    [ 'preformatted' ],
-                    [ 'fullscreen', 'close' ]
-                ],
-                changeActiveDropdownIcon: true,
-                minimalLinks: true,
-                defaultLinkTarget: '_blank',
-                plugins: {
-                    upload: uploadOptions
-                }
-            };
-            var formTbwOptions = {
-                lang: 'fr',
-                mobile: true,
-                fixedBtnPane: true,
-                fixedFullWidth: true,
-                semantic: true,
-                resetCss: true,
-                removeformatPasted: true,
-                tagsToRemove: [ 'script', 'style' ],
-                imageWidthModalEdit: true,
-
-                autogrow: true,
-                autogrowOnEnter: true,
-
-                btnsDef: {
-                    strong: {
-                        fn: 'bold',
-                        key: 'G'
-                    }
-                }
-            };
-               let htmlContent = $('#flat-buttonpane').trumbowyg('html');
+            let htmlContent = $('#flat-buttonpane').trumbowyg('html');
             let converted = htmlDocx.asBlob(htmlContent);
             $('#download-docs-btn').click(function () {
                 saveAs(converted, 'document.docx');
             });
             $('#reset-default-editor').click(function () {
-
                 $('#simple-editor').trumbowyg('empty');
-
             });
         }); 
     </script>
