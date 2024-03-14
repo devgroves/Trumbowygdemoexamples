@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trumbowyg Export Example using CDN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/ui/trumbowyg.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.25.1/trumbowyg.min.js"></script>
+    
+</head>
+
+<body>
+
+    <h1>Trumbowyg Editor Export Example</h1>
+
+    <div id="editor">
+        <p>Start typing your content here...</p>
+    </div>
+
+    <button id="export-html">Export as HTML</button>
+    <button id="export-text">Export as Plain Text</button>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize Trumbowyg editor
+            $('#editor').trumbowyg();
+
+            // Export content as HTML
+            $('#export-html').click(function () {
+                var htmlContent = $('#editor').trumbowyg('html');
+                downloadFile(htmlContent, 'content.html', 'text/html');
+            });
+
+            // Export content as plain text
+            $('#export-text').click(function () {
+                var plainTextContent = $('#editor').trumbowyg('html').replace(/<[^>]*>/g, '');
+                downloadFile(plainTextContent, 'content.txt', 'text/plain');
+            });
+
+            // Function to download file
+            function downloadFile(content, filename, contentType) {
+                var blob = new Blob([ content ], { type: contentType });
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
