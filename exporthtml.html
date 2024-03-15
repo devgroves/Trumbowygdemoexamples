@@ -42,7 +42,7 @@
             // Function to download file
             function downloadFile(content, filename, contentType) {
                 var blob = new Blob([ content ], { type: contentType });
-                var url = window.URL.createObjectURL(blob);
+                var url =  window.URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
                 a.download = filename;
